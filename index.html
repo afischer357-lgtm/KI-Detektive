@@ -4,6 +4,13 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>KI-Detektive</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="KI-Detektive">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#1d2340">
 <link rel="stylesheet" href="style.css">
 <style>
   .weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
@@ -27,6 +34,14 @@
     <p>In 10 Wochen findest du heraus, wie künstliche Intelligenz (KI) funktioniert – was sie super kann und wo sie Fehler macht.</p>
     <p>Wähle oben dein <b>Niveau</b> (★, ★★ oder ★★★). Du kannst es jederzeit ändern.</p>
     <a class="btn yellow" href="ausweis.html">🪪 Mein Detektiv-Ausweis</a>
+  </div>
+  <div class="card" id="install" hidden style="border:3px solid var(--yellow)">
+    <h3>📲 Erst einmal: App auf den Home-Bildschirm legen!</h3>
+    <ol>
+      <li>Tippe oben in Safari auf <b>Teilen</b> (das Viereck mit dem Pfeil nach oben □↑).</li>
+      <li>Wähle <b>„Zum Home-Bildschirm“</b> und dann <b>„Hinzufügen“</b>.</li>
+      <li>Öffne die KI-Detektive ab jetzt <b>immer über das neue Symbol</b> 🔍. Nur dann bleiben deine Stempel gespeichert.</li>
+    </ol>
   </div>
   <div class="weeks" id="weeks"></div>
 </main>
@@ -52,6 +67,8 @@ document.getElementById('weeks').innerHTML = W.map((w,i)=>`
     ${w[2]?'':'<small>kommt bald</small>'}
   </a>`).join('');
 KI.initNiveau();
+const standalone = window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+document.getElementById('install').hidden = standalone;
 </script>
 </body>
 </html>
