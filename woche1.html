@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woche 1 · Wo steckt KI?</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .sortcard{text-align:center;padding:26px}
+  .sortcard .em{font-size:90px;line-height:1.1}
+  .sortcard .name{font-size:26px;font-weight:700;margin:8px 0 18px}
+  .choice{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .choice .btn{font-size:22px;padding:18px 26px;min-width:200px}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .cols ul{padding-left:20px;margin:6px 0}
+  @media (max-width:600px){.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">🔎</div>
+  <h1>Woche 1 · Wo steckt KI?<small>KI-Detektive</small></h1>
+  <div class="niveau"></div>
+  <a class="home" href="index.html">⌂ Start</a>
+</header>
+<main>
+<nav class="steps">
+  <button data-step="1">1 · Detektiv-Quiz</button>
+  <button data-step="2">2 · Fall des Tages</button>
+  <button data-step="3">3 · Ermittlung</button>
+  <button data-step="4">4 · Exit-Ticket</button>
+</nav>
+
+<section class="step" data-step="1">
+  <div class="card"><h2>🔍 Was weißt du schon?</h2>
+  <p>Kein Problem, wenn du etwas nicht weißt. Rate einfach! Liegst du daneben, bekommst du einen Tipp und darfst es nochmal versuchen.</p></div>
+  <div id="quiz"></div>
+</section>
+
+<section class="step" data-step="2">
+  <div class="card center">
+    <div class="big">🤖❓🧑</div>
+    <h2>Fall Nr. 1: Mensch oder Maschine?</h2>
+    <p>Eure Lernbegleitung zeigt euch gleich 4 Witze.<br>2 Witze hat ein <b>Mensch</b> geschrieben. 2 Witze hat eine <b>KI</b> geschrieben.</p>
+    <p><b>Eure Aufgabe:</b> Stimmt ab: Wer hat welchen Witz geschrieben?</p>
+  </div>
+  <div class="card teacher">
+    <p><b>Vorbereitung:</b> Lass dir vor der Stunde im fobizz-KI-Chat 2 kurze Kinderwitze schreiben (Prompt: <i>„Schreibe einen kurzen Witz für 11-jährige Kinder über die Schule.“</i>). Schreib selbst 2 Witze dazu. Zeig alle 4 gemischt über AirPlay.</p>
+    <p><b>Abstimmung:</b> fobizz-Umfrage mit 4 Fragen („Witz 1: Mensch oder KI?“ …) oder per Handzeichen.</p>
+    <p><b>Impulsfrage danach:</b> „Woran habt ihr das erkannt? Ist das überhaupt sicher zu erkennen?“</p>
+  </div>
+</section>
+
+<section class="step" data-step="3">
+  <div class="card">
+    <h2>🕵️ Ermittlung: KI oder keine KI?</h2>
+    <p>Du siehst nacheinander Dinge aus dem Alltag. Entscheide: <b>Steckt da KI drin?</b></p>
+    <div class="hint" data-nv="1 2">
+      <b>Detektiv-Regel:</b><br>
+      🤖 <b>KI</b> lernt aus vielen Beispielen und erkennt Muster.<br>
+      ⚙️ <b>Keine KI</b>: Das Gerät macht immer genau dasselbe, nach festen Regeln.
+    </div>
+    <div class="info" data-nv="3">Bei ★★★ musst du nach jeder Entscheidung auch den <b>Grund</b> wählen.</div>
+  </div>
+  <div id="game"></div>
+  <div id="after" hidden>
+    <div class="task">
+      <b>📌 Auftrag: Dein Freeform-Board „KI in meinem Alltag“</b>
+      <ol data-nv="1">
+        <li>Öffne die App <b>Freeform</b>.</li>
+        <li>Schreib oben die Überschrift: <i>KI in meinem Alltag</i>.</li>
+        <li>Wähle <b>3 Beispiele</b> mit KI aus dem Spiel. Schreib jedes auf eine Haftnotiz.</li>
+        <li>Ergänze bei jedem den Satz: <i>„Hier ist KI, weil …“</i></li>
+      </ol>
+      <div class="wordbank" data-nv="1"><b>lernt</b><b>Beispiele</b><b>erkennt</b><b>Muster</b><b>Daten</b></div>
+      <ol data-nv="2">
+        <li>Öffne die App <b>Freeform</b> und erstelle ein Board <i>KI in meinem Alltag</i>.</li>
+        <li>Sammle <b>4 Beispiele</b> mit KI: 3 aus dem Spiel und 1 eigenes.</li>
+        <li>Erkläre bei jedem in einem Satz, warum dort KI steckt.</li>
+      </ol>
+      <ol data-nv="3">
+        <li>Erstelle in <b>Freeform</b> ein Board <i>KI in meinem Alltag</i> mit <b>2 Bereichen</b>: „KI“ und „keine KI“.</li>
+        <li>Sortiere mindestens 6 Beispiele ein, 2 davon hast du dir selbst ausgedacht.</li>
+        <li>Finde ein Beispiel, bei dem man streiten kann. Begründe deine Entscheidung.</li>
+      </ol>
+      <p>Wenn du fertig bist: Zeig dein Board per <b>AirPlay</b>, wenn die Lernbegleitung dich aufruft.</p>
+    </div>
+    <button class="btn gray" onclick="startGame()">🔄 Nochmal spielen</button>
+  </div>
+</section>
+
+<section class="step" data-step="4">
+  <div class="card"><h2>🎫 Exit-Ticket</h2><p>Beantworte die Frage und schreib einen Satz. Dann bekommst du deinen Stempel!</p></div>
+  <div id="exit"></div>
+</section>
+</main>
+
+<script src="common.js"></script>
+<script>
+KI.initSteps();
+KI.initNiveau();
+
+KI.quiz(document.getElementById('quiz'), [
+  {q:'Wofür steht die Abkürzung „KI“?', a:['Kleine Information','Künstliche Intelligenz','Kluge Insel','Krasse Idee'], c:1,
+   h:'Das erste Wort bedeutet: von Menschen gemacht, nicht aus der Natur. Das zweite Wort heißt so viel wie „Klugheit“.',
+   e:'KI heißt <b>Künstliche Intelligenz</b>. „Künstlich“ bedeutet: von Menschen gemacht.'},
+  {q:'Woher „weiß“ eine KI Dinge?', a:['Sie lernt aus sehr vielen Beispielen (Daten).','Sie hat ein Gehirn wie ein Mensch.','Sie denkt sich alles selbst aus.','Sie fragt heimlich im Internet nach.'], c:0,
+   h:'Denk daran, wie du Vokabeln lernst: durch viele Wiederholungen und Beispiele. Ein Gehirn hat ein Computer nicht.',
+   e:'Eine KI lernt aus <b>Daten</b> – das sind ganz viele Beispiele. Ein Gehirn hat sie nicht.'},
+  {q:'Was davon kann eine KI?', a:['Traurig sein','Gesichter auf Fotos erkennen','Hunger haben','Freunde vermissen'], c:1,
+   h:'Eine KI hat keinen Körper und keine Gefühle. Welche Antwort hat mit Sehen und Erkennen zu tun?',
+   e:'KI kann <b>Muster erkennen</b>, zum Beispiel Gesichter. Gefühle hat sie nicht.'},
+  {q:'Macht eine KI manchmal Fehler?', a:['Nein, nie.','Ja, auch eine KI kann sich irren.'], c:1,
+   h:'Hat dich eine Sprachassistentin oder eine Übersetzer-App schon mal falsch verstanden?',
+   e:'Ja! KI kann sich <b>irren</b>. Das schauen wir uns in den nächsten Wochen genau an.'}
+], () => KI.markDone(1));
+
+KI.exitTicket(document.getElementById('exit'), 1,
+  {q:'Woran erkennst du am besten, dass in einem Gerät KI steckt?', a:['Es hat einen Stecker.','Es ist sehr teuer.','Es lernt aus Beispielen und erkennt Muster.','Es ist sehr schnell.'], c:2,
+   h:'Erinnere dich an die Detektiv-Regel aus dem Spiel. Auch ein Wasserkocher hat einen Stecker – ist der deshalb eine KI?',
+   e:'Genau: KI <b>lernt aus Beispielen</b> und <b>erkennt Muster</b>. Ein Stecker oder ein hoher Preis sagt darüber nichts.'},
+  'Wo hast du heute KI entdeckt, wo du sie nicht erwartet hättest?');
+
+/* ---------- Sortier-Spiel ---------- */
+const CARDS = [
+  {em:'🗣️', t:'Sprachassistent, dem man Fragen stellt', ki:true, w:'Er versteht gesprochene Sprache. Das hat er aus sehr vielen Sprachaufnahmen gelernt.', easy:true},
+  {em:'🧮', t:'Taschenrechner', ki:false, w:'Er rechnet nach festen Regeln. 2 + 2 ist immer 4 – da lernt nichts dazu.', easy:true},
+  {em:'🔓', t:'Handy wird mit dem Gesicht entsperrt', ki:true, w:'Das Handy erkennt die Muster in deinem Gesicht.', easy:true},
+  {em:'💡', t:'Lichtschalter', ki:false, w:'An oder aus – immer gleich. Keine KI.', easy:true},
+  {em:'📺', t:'Video-Vorschläge in einer Video-App', ki:true, w:'Die App lernt aus dem, was du schaust, und schlägt Ähnliches vor.', easy:true},
+  {em:'⏰', t:'Wecker', ki:false, w:'Er klingelt zur eingestellten Zeit. Feste Regel, keine KI.', easy:true},
+  {em:'🌍', t:'Übersetzer-App', ki:true, w:'Sie hat aus Millionen übersetzten Texten gelernt.', easy:true},
+  {em:'🚦', t:'Ampel mit fester Zeitschaltung', ki:false, w:'Sie schaltet immer nach denselben Zeiten um.', easy:true},
+  {em:'📧', t:'Spam-Filter im E-Mail-Postfach', ki:true, w:'Er hat an vielen Beispielen gelernt, wie Werbe- und Betrugsmails aussehen.', easy:false},
+  {em:'🧹', t:'Saugroboter mit Kamera, der Socken und Kabel erkennt', ki:true, w:'Er erkennt Gegenstände auf Kamerabildern – das hat er an vielen Bildern gelernt.', easy:false},
+  {em:'👾', t:'Computergegner im Spiel, der immer denselben Weg läuft', ki:false, w:'Er folgt festen Regeln und lernt nichts dazu.', easy:false},
+  {em:'🖼️', t:'Foto-App, die Fotos nach Personen sortiert', ki:true, w:'Sie erkennt Gesichter auf Fotos. Das ist Mustererkennung.', easy:true},
+  {em:'🔢', t:'Zahlenschloss am Fahrrad', ki:false, w:'Nur der richtige Code öffnet es. Feste Regel.', easy:true},
+  {em:'🎨', t:'Bildgenerator, der Bilder aus Text malt', ki:true, w:'Er hat aus Millionen Bildern gelernt, wie Dinge aussehen.', easy:false},
+  {em:'🌡️', t:'Thermometer', ki:false, w:'Es misst nur die Temperatur. Keine KI.', easy:false},
+  {em:'💬', t:'Chatbot, der Fragen beantwortet', ki:true, w:'Er hat aus riesigen Textmengen gelernt, wie Sprache funktioniert.', easy:false}
+];
+const REASONS = [
+  {t:'Es lernt aus Daten und erkennt Muster.', ki:true},
+  {t:'Es arbeitet immer nach denselben festen Regeln.', ki:false},
+  {t:'Es braucht Strom.', ki:null}
+];
+let deck, idx, pts, max, sorted;
+function startGame(){
+  const n = KI.niveau();
+  deck = KI.shuffle(n===1 ? CARDS.filter(c=>c.easy).slice(0,10) : CARDS);
+  idx = 0; pts = 0; max = 0; wrong1 = undefined; sorted = {ki:[], no:[]};
+  document.getElementById('after').hidden = true;
+  showCard();
+}
+function showCard(){
+  const g = document.getElementById('game');
+  if(idx >= deck.length){
+    g.innerHTML = `<div class="card center"><div class="big">🎉</div><h2>${pts} von ${max} Punkten!</h2><p>Punkte gibt es, wenn du gleich beim ersten Versuch richtig liegst.</p>
+      <div class="cols" style="text-align:left">
+        <div class="info"><b>🤖 KI</b><ul>${sorted.ki.map(c=>`<li>${c.em} ${c.t}</li>`).join('')}</ul></div>
+        <div class="hint"><b>⚙️ Keine KI</b><ul>${sorted.no.map(c=>`<li>${c.em} ${c.t}</li>`).join('')}</ul></div>
+      </div></div>`;
+    document.getElementById('after').hidden = false;
+    KI.applyNiveau(); KI.markDone(3);
+    return;
+  }
+  const c = deck[idx];
+  g.innerHTML = `<div class="card sortcard">
+    <div class="qcount">Karte ${idx+1} von ${deck.length} · ⭐ ${pts} Punkte</div>
+    <div class="progress"><div style="width:${idx/deck.length*100}%"></div></div>
+    <div class="em">${c.em}</div><div class="name">${c.t}</div>
+    <div class="choice" id="ch">
+      <button class="btn" onclick="choose(true)">🤖 KI</button>
+      <button class="btn yellow" onclick="choose(false)">⚙️ Keine KI</button>
+    </div><div id="fb"></div></div>`;
+}
+let wrong1, wrong2;
+function choose(isKI){
+  const c = deck[idx];
+  if(wrong1===undefined){ wrong1=0; wrong2=0; }
+  if(isKI!==c.ki){
+    /* Falsch: Tipp statt Lösung, nochmal entscheiden */
+    wrong1++;
+    document.getElementById('fb').innerHTML = `<div class="feedback" style="text-align:left"><b>🤔 Noch nicht.</b> 💡 <b>Tipp:</b> ${
+      c.ki ? 'Muss dieses Gerät etwas <b>erkennen oder verstehen</b>, das jedes Mal ein bisschen anders aussieht oder klingt? Dafür braucht es viele Beispiele.'
+           : 'Macht dieses Gerät nicht <b>jedes Mal genau dasselbe</b>? Lernt es wirklich etwas dazu?'}
+      <br><i>Überleg nochmal und entscheide neu!</i></div>`;
+    return;
+  }
+  document.getElementById('ch').hidden = true;
+  if(KI.niveau()===3) askReason(c); else reveal(false);
+}
+function askReason(c){
+  document.getElementById('fb').innerHTML = `<p>✅ Richtig entschieden! <b>Warum?</b> Wähle den passenden Grund:</p><div class="answers">${
+    KI.shuffle(REASONS).map(r=>`<button class="answer" data-ki="${r.ki}">${r.t}</button>`).join('')}</div><div id="rfb"></div>`;
+  document.querySelectorAll('#fb .answer').forEach(b=>b.onclick=()=>{
+    if(b.dataset.ki===String(c.ki)) return reveal(true);
+    wrong2++; b.disabled=true; b.classList.add('wrong');
+    document.getElementById('rfb').innerHTML = `<div class="feedback"><b>🤔 Der Grund passt noch nicht.</b> 💡 ${
+      b.dataset.ki==='null' ? 'Strom brauchen fast alle Geräte – auch eine Lampe. Sagt das etwas über KI?'
+                            : 'Passt dieser Grund zu deiner Entscheidung „' + (c.ki?'KI':'keine KI') + '“?'} Versuch es nochmal!</div>`;
+  });
+}
+function reveal(withReason){
+  const c = deck[idx];
+  max += withReason ? 2 : 1;
+  pts += (wrong1===0?1:0) + (withReason && wrong2===0 ? 1 : 0);
+  (c.ki ? sorted.ki : sorted.no).push(c);
+  const first = wrong1===0 && (!withReason || wrong2===0);
+  document.getElementById('fb').innerHTML = `<div class="feedback" style="text-align:left">
+    <b>${first?'✅ Richtig – gleich beim ersten Versuch!':'✅ Richtig – gut nachgedacht!'}</b> ${c.ki?'🤖 Hier steckt KI drin.':'⚙️ Hier steckt keine KI drin.'} ${c.w}
+    <br><button class="btn" style="margin-top:10px" onclick="idx++;wrong1=undefined;showCard()">Weiter ➜</button></div>`;
+}
+KI.onNiveau(()=>{ if(!deck || idx===0) startGame(); });
+startGame();
+</script>
+</body>
+</html>

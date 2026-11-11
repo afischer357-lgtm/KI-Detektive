@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woche 4 · Hallo fobizz!</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .sub{margin:22px 0 10px;font-size:22px}
+  .rules label{display:flex;gap:12px;align-items:flex-start;background:#fff;border-radius:14px;padding:12px 14px;margin:8px 0;font-size:19px;border:3px solid #e2e5ef}
+  .rules input{width:28px;height:28px;flex:none;margin-top:2px}
+  .rules label.on{border-color:var(--green);background:var(--green-l)}
+  .license{border:4px solid var(--ink);border-radius:22px;padding:20px;background:linear-gradient(135deg,#fff,#e3ecfc);text-align:center}
+  .license h2{margin:4px 0}
+  .prompt{background:#f6f7fb;border-radius:12px;padding:12px 14px;font-family:ui-monospace,Menlo,monospace;font-size:17px;margin:8px 0}
+  .copy{font-size:15px;padding:6px 12px;border-radius:10px;border:2px solid var(--blue);background:#fff;color:var(--blue);font-weight:700;cursor:pointer}
+  .formula{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:10px 0}
+  .formula div{background:#fff;border-radius:14px;padding:12px;text-align:center;border:3px solid var(--purple-l)}
+  .formula b{display:block;font-size:30px}
+  @media (max-width:600px){.formula{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">💬</div>
+  <h1>Woche 4 · Hallo fobizz!<small>KI-Detektive</small></h1>
+  <div class="niveau"></div>
+  <a class="home" href="index.html">⌂ Start</a>
+</header>
+<main>
+<nav class="steps">
+  <button data-step="1">1 · Detektiv-Quiz</button>
+  <button data-step="2">2 · Fall des Tages</button>
+  <button data-step="3">3 · Ermittlung</button>
+  <button data-step="4">4 · Exit-Ticket</button>
+</nav>
+
+<section class="step" data-step="1">
+  <div class="card"><h2>🔍 Was weißt du noch von letzter Woche?</h2>
+  <p>Liegst du daneben, bekommst du einen Tipp und darfst es nochmal versuchen.</p></div>
+  <div id="quiz"></div>
+</section>
+
+<section class="step" data-step="2">
+  <div class="card center">
+    <div class="big">🤫💬</div>
+    <h2>Fall Nr. 4: Darf man einer KI alles erzählen?</h2>
+    <p>Ein Kind schreibt in einen KI-Chat:</p>
+    <div class="prompt" style="text-align:left">„Hallo! Ich heiße Mia Müller, wohne in der Lindenstraße 5 in Köln und gehe in die 6b. Mein Passwort ist Pony123. Kannst du mir bei Mathe helfen?“</div>
+    <p><b>Was ist hier keine gute Idee? Warum?</b></p>
+  </div>
+  <div class="card teacher">
+    <p><b>Ablauf:</b> Beispiel per AirPlay zeigen (erfundene Person). Die Lernenden nennen auf der fobizz-Pinnwand, welche Angaben nicht in einen Chat gehören.</p>
+    <p><b>Ziel:</b> Name, Adresse, Klasse, Passwort sind <b>persönliche Daten</b>. Was man eingibt, wird auf Servern verarbeitet und kann gespeichert werden. Für die Mathe-Frage braucht die KI keine dieser Angaben.</p>
+    <p><b>Überleitung:</b> „Heute macht ihr euren KI-Führerschein. Erst danach schalte ich den fobizz-Chat für euch frei.“</p>
+  </div>
+</section>
+
+<section class="step" data-step="3">
+  <div class="card">
+    <h2>🪪 Ermittlung: Dein KI-Führerschein</h2>
+    <p>Der Führerschein hat <b>3 Stationen</b>. Danach probierst du den KI-Chat in fobizz aus.</p>
+  </div>
+
+  <h3 class="sub">🚦 Station 1: Darf das in den KI-Chat?</h3>
+  <div class="hint" data-nv="1">
+    <b>Detektiv-Regel:</b> Alles, was <b>nur dich oder andere Menschen</b> verrät, bleibt draußen: Name, Adresse, Telefonnummer, Passwort, Fotos von Personen, Geheimnisse.
+  </div>
+  <div id="st1"></div>
+
+  <div id="part2" hidden>
+    <h3 class="sub">✍️ Station 2: Welcher Prompt ist besser?</h3>
+    <div class="info">Ein <b>Prompt</b> ist die Nachricht, die du der KI schreibst. Ein guter Prompt sagt genau, was du willst.
+      <div class="formula">
+        <div><b>🎯</b>Was soll die KI tun?</div>
+        <div><b>👧</b>Für wen ist es?</div>
+        <div><b>📏</b>Wie soll es aussehen?</div>
+      </div>
+      <i>Beispiel: „Erkläre (Was?) einem 11-jährigen Kind (Für wen?) in 3 kurzen Sätzen (Wie?), wie ein Regenbogen entsteht.“</i>
+    </div>
+    <div id="st2"></div>
+  </div>
+
+  <div id="part3" hidden>
+    <h3 class="sub">✋ Station 3: Deine KI-Regeln</h3>
+    <p>Lies jede Regel und hake sie ab, wenn du dich daran halten willst.</p>
+    <div class="rules" id="rules"></div>
+    <div id="license"></div>
+  </div>
+
+  <div id="part4" hidden>
+    <h3 class="sub">💬 Jetzt in fobizz: Probier den KI-Chat aus!</h3>
+    <div class="task">
+      <b>📌 Auftrag</b>
+      <div data-nv="1">
+        <ol>
+          <li>Öffne den <b>fobizz-KI-Chat</b> über den Link deiner Lernbegleitung.</li>
+          <li>Tippe bei einem Prompt auf <b>„Kopieren“</b>. Füge ihn im Chat ein und schicke ihn ab.</li>
+          <li>Lies die Antwort. Probiere danach den nächsten Prompt.</li>
+        </ol>
+        <div class="prompt">Erkläre einem 11-jährigen Kind in 3 kurzen Sätzen, wie ein Regenbogen entsteht. <button class="copy">Kopieren</button></div>
+        <div class="prompt">Schreibe einen lustigen Witz über einen Pinguin, der Fußball spielt. <button class="copy">Kopieren</button></div>
+        <div class="prompt">Gib mir 3 Ideen für eine Geschichte über einen Roboter, der Angst vor Wasser hat. <button class="copy">Kopieren</button></div>
+      </div>
+      <div data-nv="2">
+        <ol>
+          <li>Öffne den <b>fobizz-KI-Chat</b>.</li>
+          <li>Schicke zuerst diesen schwachen Prompt ab: <span class="prompt" style="display:inline-block">Erzähl was über Tiere.</span></li>
+          <li>Verbessere ihn mit der Formel <b>Was? – Für wen? – Wie?</b> und schicke ihn nochmal ab.</li>
+          <li>Vergleiche beide Antworten. Welche hilft dir mehr?</li>
+        </ol>
+      </div>
+      <div data-nv="3">
+        <ol>
+          <li>Öffne den <b>fobizz-KI-Chat</b>.</li>
+          <li>Denk dir eine Frage aus einem Schulfach aus. Stelle sie einmal <b>ganz kurz</b> und einmal mit der Formel <b>Was? – Für wen? – Wie?</b></li>
+          <li>Vergleiche die beiden Antworten. Beschreibe den Unterschied.</li>
+          <li>Prüfe: Stimmt alles, was die KI schreibt? Markiere eine Stelle, bei der du unsicher bist.</li>
+        </ol>
+      </div>
+      <p><b>Danach:</b> Erstelle in <b>Keynote</b> deinen <b>Prompt-Spickzettel</b> mit der Formel und deinem besten Prompt.</p>
+      <div class="wordbank" data-nv="1"><b>Was?</b><b>Für wen?</b><b>Wie?</b><b>Prompt</b><b>persönliche Daten</b></div>
+    </div>
+    <div class="hint">⚠️ <b>Denk an deinen Führerschein:</b> Keine Namen, keine Adressen, keine Fotos von Personen!</div>
+  </div>
+</section>
+
+<section class="step" data-step="4">
+  <div class="card"><h2>🎫 Exit-Ticket</h2></div>
+  <div id="exit"></div>
+</section>
+</main>
+
+<script src="common.js"></script>
+<script>
+KI.initSteps();
+KI.initNiveau();
+
+KI.quiz(document.getElementById('quiz'), [
+  {q:'Wie hat die Gummibärchen-KI gelernt, gut zu spielen?', a:['Jemand hat ihr alle Tricks verraten.','Durch Ausprobieren: Schlechte Züge wurden gelöscht.','Sie hat ein Buch gelesen.'], c:1,
+   h:'Denk an die Kisten: Was ist mit dem Gummibärchen passiert, wenn die Maschine verloren hat?',
+   e:'Genau: Sie hat durch <b>Ausprobieren</b> gelernt. Züge, die zum Verlieren führten, wurden <b>bestraft</b>.'},
+  {q:'Weiß die Gummibärchen-KI, <i>warum</i> ein Zug gut ist?', a:['Ja, sie versteht das Spiel genau.','Nein, sie hat nur gezählt und schlechte Züge gelöscht.'], c:1,
+   h:'Die Maschine besteht nur aus Kisten und Gummibärchen. Kann eine Kiste nachdenken?',
+   e:'Richtig! Die Maschine <b>versteht nichts</b>. Sie hat nur gezählt. Trotzdem spielt sie am Ende sehr gut.'},
+  {q:'Wie heißt diese Art zu lernen: Gutes wird belohnt, Schlechtes wird bestraft?', a:['Bestärkendes Lernen','Auswendiglernen','Abschreiben'], c:0,
+   h:'Das Wort hat mit „stärken“ zu tun: Gute Züge werden gestärkt.',
+   e:'Das heißt <b>bestärkendes Lernen</b>. So lernen auch viele Spiel-KIs.'}
+], () => KI.markDone(1));
+
+/* Station 1 */
+const OK='✅ Darf in den Chat', NO='⛔ Bleibt draußen';
+KI.quiz(document.getElementById('st1'), [
+  {q:'„Wie viele Beine hat eine Spinne?“', a:[OK,NO], c:0, h:'Verrät diese Frage etwas über dich oder andere Menschen?', e:'Eine Wissensfrage ohne persönliche Daten – das ist okay.'},
+  {q:'„Ich heiße Ben Schmitz und wohne in der Gartenstraße 12.“', a:[OK,NO], c:1, h:'Könnte jemand mit diesen Angaben herausfinden, wer du bist und wo du wohnst?', e:'Name und Adresse sind <b>persönliche Daten</b>. Die braucht eine KI nie.'},
+  {q:'„Schreib mir einen Witz über Pinguine.“', a:[OK,NO], c:0, h:'Steht hier irgendetwas über eine echte Person?', e:'Ein Witz über Pinguine verrät nichts über dich. Okay!'},
+  {q:'„Mein Passwort für das iPad ist Sonne2014.“', a:[OK,NO], c:1, h:'Wem verrätst du normalerweise dein Passwort?', e:'Ein <b>Passwort</b> verrät man niemandem – auch keiner KI.'},
+  {q:'Ein Foto von deiner besten Freundin hochladen, damit die KI es lustig verändert.', a:[OK,NO], c:1, h:'Hat deine Freundin gesagt, dass ihr Foto ins Internet darf? Und ist sie darauf zu erkennen?', e:'Fotos von Personen bleiben draußen. Jede:r entscheidet selbst über das eigene Bild.'},
+  {q:'„Erkläre mir, wie Pflanzen Wasser trinken.“', a:[OK,NO], c:0, h:'Ist das eine Frage zu einem Schulthema – ohne Namen?', e:'Eine Lernfrage ohne persönliche Daten. Perfekt!'},
+  {q:'„Was Tom aus meiner Klasse gestern Peinliches gemacht hat: …“', a:[OK,NO], c:1, h:'Würde Tom wollen, dass das jemand Fremdes liest?', e:'Über <b>andere Menschen</b> schreiben wir nichts Persönliches. Das ist unfair und verletzt ihre Privatsphäre.'},
+  {q:'„Hilf mir, eine Geschichte über einen Drachen zu schreiben.“', a:[OK,NO], c:0, h:'Ist ein Drache eine echte Person?', e:'Eine Fantasiegeschichte – super Idee für einen Prompt!'}
+], () => { document.getElementById('part2').hidden = false; KI.applyNiveau(); });
+
+/* Station 2 */
+KI.quiz(document.getElementById('st2'), [
+  {q:'Du willst wissen, wie Vulkane funktionieren. Welcher Prompt ist besser?', a:['„Vulkane“','„Erkläre einem 11-jährigen Kind in 4 kurzen Sätzen, warum ein Vulkan ausbricht.“'], c:1,
+   h:'Schau dir die Formel an: Bei welchem Prompt weiß die KI <b>was</b>, <b>für wen</b> und <b>wie</b>?',
+   e:'Der zweite Prompt sagt Was, Für wen und Wie. So bekommst du eine passende Antwort.'},
+  {q:'Du brauchst Ideen für ein Klassenfest. Welcher Prompt ist besser?', a:['„Gib mir 5 Spielideen für ein Klassenfest mit 20 Kindern, die drinnen funktionieren.“','„Party“'], c:0,
+   h:'Welcher Prompt verrät, wie viele Ideen du willst und wo gespielt wird?',
+   e:'Genau! Anzahl, Gruppe und Ort helfen der KI, gute Ideen zu finden.'},
+  {q:'Welcher Prompt ist besser <b>und</b> sicherer?', a:['„Ich bin Lea aus der 6a. Schreib ein Gedicht über meinen Hund Bello.“','„Schreib ein lustiges Gedicht mit 4 Zeilen über einen Hund, der gern Socken klaut.“'], c:1,
+   h:'Denk an Station 1: Steht in einem Prompt etwas Persönliches?',
+   e:'Der zweite Prompt ist genau und verrät nichts über dich. Doppelt gut!'}
+], () => { document.getElementById('part3').hidden = false; renderRules(); });
+
+/* Station 3 */
+const RULES = [
+  '🔒 Ich schreibe keine persönlichen Daten in den Chat: keine Namen, Adressen, Telefonnummern oder Passwörter.',
+  '📷 Ich lade keine Fotos von Menschen hoch.',
+  '🤔 Ich glaube der KI nicht alles. Sie kann Fehler machen.',
+  '🤝 Ich schreibe nichts Gemeines oder Peinliches über andere.',
+  '🙋 Wenn mir etwas komisch vorkommt, frage ich meine Lernbegleitung.'
+];
+function renderRules(){
+  const box = document.getElementById('rules');
+  box.innerHTML = RULES.map((r,i)=>`<label><input type="checkbox" data-i="${i}"><span>${r}</span></label>`).join('');
+  box.querySelectorAll('input').forEach(cb => cb.onchange = () => {
+    cb.parentElement.classList.toggle('on', cb.checked);
+    const all = [...box.querySelectorAll('input')].every(x => x.checked);
+    const nick = KI.get('kiNick','') || 'KI-Detektiv:in';
+    document.getElementById('license').innerHTML = all ? `<div class="license">
+      <div class="big">🪪</div><h2>KI-Führerschein</h2>
+      <p>für <b>${nick.replace(/</g,'&lt;')}</b></p>
+      <p>✅ Datenschutz &nbsp; ✅ Gute Prompts &nbsp; ✅ KI-Regeln</p>
+      <div class="stamp" style="margin:6px 0 10px">BESTANDEN</div>
+      <p style="margin-top:14px">📸 Mach einen Screenshot und zeig ihn deiner Lernbegleitung.<br>Dann bekommst du den fobizz-Link.</p></div>` : '';
+    if (all) { KI.set('kiFuehrerschein', true); document.getElementById('part4').hidden = false; KI.applyNiveau(); KI.markDone(3); }
+  });
+}
+
+/* Kopieren-Knöpfe */
+document.querySelectorAll('.copy').forEach(b => b.onclick = async () => {
+  const text = b.parentElement.firstChild.textContent.trim();
+  try { await navigator.clipboard.writeText(text); b.textContent = '✔ Kopiert'; }
+  catch(e) { b.textContent = 'Bitte abtippen'; }
+  setTimeout(()=>b.textContent='Kopieren', 2000);
+});
+
+KI.exitTicket(document.getElementById('exit'), 4,
+  {q:'Was gehört <b>nicht</b> in einen KI-Chat?', a:['Eine Frage zu Vulkanen','Deine Adresse','Ein Witz über Katzen','Ideen für eine Geschichte'], c:1,
+   h:'Denk an deinen Führerschein: Welche Antwort verrät etwas über dich?',
+   e:'Richtig: Deine <b>Adresse</b> ist ein persönliches Datum. Sie bleibt draußen.'},
+  'Was ist für dich die wichtigste KI-Regel? Warum?');
+</script>
+</body>
+</html>

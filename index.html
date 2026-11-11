@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KI-Detektive</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .weeks{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px}
+  .week{display:block;background:#fff;border-radius:18px;padding:18px;text-decoration:none;color:var(--ink);box-shadow:0 3px 0 rgba(0,0,0,.05);position:relative}
+  .week .em{font-size:44px}
+  .week b{display:block;font-size:20px;margin-top:4px}
+  .week small{color:var(--muted)}
+  .week.locked{opacity:.45;pointer-events:none}
+  .week .ok{position:absolute;top:14px;right:14px;font-size:28px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">🔍</div>
+  <h1>KI-Detektive<small>Informatik-Werkstatt · Künstliche Intelligenz</small></h1>
+  <div class="niveau"></div>
+</header>
+<main>
+  <div class="card">
+    <h2>Willkommen, Detektiv:in! 🕵️</h2>
+    <p>In 10 Wochen findest du heraus, wie künstliche Intelligenz (KI) funktioniert – was sie super kann und wo sie Fehler macht.</p>
+    <p>Wähle oben dein <b>Niveau</b> (★, ★★ oder ★★★). Du kannst es jederzeit ändern.</p>
+    <a class="btn yellow" href="ausweis.html">🪪 Mein Detektiv-Ausweis</a>
+  </div>
+  <div class="weeks" id="weeks"></div>
+</main>
+<script src="common.js"></script>
+<script>
+const W = [
+  ['🔎','Wo steckt KI?','woche1.html'],
+  ['👾','Trainiere die Maschine','woche2.html'],
+  ['🍬','Die Gummibärchen-KI','woche3.html'],
+  ['💬','Hallo fobizz!','woche4.html'],
+  ['🤥','Die KI flunkert',''],
+  ['🖼️','Echt oder KI?',''],
+  ['⚖️','Unfaire Daten',''],
+  ['🤔','Super oder gefährlich?',''],
+  ['🛠️','Projekt mit KI',''],
+  ['🎉','KI-Messe','']
+];
+const st = KI.stamps();
+document.getElementById('weeks').innerHTML = W.map((w,i)=>`
+  <a class="week ${w[2]?'':'locked'}" href="${w[2]||'#'}">
+    ${st[i+1]?'<span class="ok">✅</span>':''}
+    <div class="em">${w[0]}</div><small>Woche ${i+1}</small><b>${w[1]}</b>
+    ${w[2]?'':'<small>kommt bald</small>'}
+  </a>`).join('');
+KI.initNiveau();
+</script>
+</body>
+</html>

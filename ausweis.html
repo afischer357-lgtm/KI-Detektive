@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mein KI-Detektiv-Ausweis</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .pass{background:linear-gradient(135deg,#fff,#fdf1d6);border:4px solid var(--ink);border-radius:24px;padding:22px}
+  .pass h2{margin:0;font-size:28px}
+  .slots{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:16px}
+  .slot{border:3px dashed #c9cde0;border-radius:16px;padding:12px;text-align:center;min-height:120px;background:#fff}
+  .slot.got{border:3px solid var(--red)}
+  .slot .s{font-size:40px}
+  .slot small{display:block;color:var(--muted)}
+  input{font-size:20px;padding:10px 12px;border-radius:12px;border:2px solid #d8dbe6;width:100%;max-width:360px;font-family:inherit}
+  .notes p{background:#fff;border-radius:12px;padding:10px 12px;margin:6px 0}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">🪪</div>
+  <h1>Mein Detektiv-Ausweis<small>KI-Detektive</small></h1>
+  <a class="home" href="index.html">⌂ Start</a>
+</header>
+<main>
+  <div class="pass">
+    <h2>🕵️ KI-Detektiv-Ausweis</h2>
+    <p class="noprint">Dein <b>Detektiv-Deckname</b> (ein Fantasiename, <u>nicht</u> dein echter Name):</p>
+    <input id="nick" class="noprint" maxlength="30" placeholder="z. B. Agentin Pixel">
+    <p style="font-size:22px"><b>Deckname:</b> <span id="nickShow">–</span></p>
+    <p><b>Gelöste Fälle:</b> <span id="count">0</span> von 10</p>
+    <div class="slots" id="slots"></div>
+  </div>
+  <div class="card notes" style="margin-top:16px">
+    <h3>✍️ Meine Exit-Tickets</h3>
+    <div id="notes"></div>
+  </div>
+  <div class="card noprint">
+    <p>🔒 Dein Ausweis wird nur auf diesem iPad gespeichert.</p>
+    <button class="btn" onclick="window.print()">📄 Als PDF sichern</button>
+    <p style="font-size:15px;color:#5b6382">So geht’s auf dem iPad: Tippe auf „Als PDF sichern“ → oben auf das Teilen-Symbol → „In Dateien sichern“.</p>
+  </div>
+</main>
+<script src="common.js"></script>
+<script>
+const names=['Wo steckt KI?','Trainiere die Maschine','Gummibärchen-KI','Hallo fobizz!','Die KI flunkert','Echt oder KI?','Unfaire Daten','Super oder gefährlich?','Projekt mit KI','KI-Messe'];
+const st=KI.stamps();
+document.getElementById('slots').innerHTML=names.map((n,i)=>`<div class="slot ${st[i+1]?'got':''}">
+  <div class="s">${st[i+1]?'🕵️':'⬜'}</div><b>Fall ${i+1}</b><small>${n}</small>${st[i+1]?`<small>✅ ${st[i+1]}</small>`:''}</div>`).join('');
+document.getElementById('count').textContent=Object.keys(st).length;
+const notes=document.getElementById('notes');
+let any=false;
+for(let w=1;w<=10;w++){const t=KI.get('exit_w'+w,'');if(t){any=true;const p=document.createElement('p');p.innerHTML=`<b>Woche ${w}:</b> `;p.appendChild(document.createTextNode(t));notes.appendChild(p);}}
+if(!any)notes.innerHTML='<p>Noch keine Exit-Tickets.</p>';
+const nick=document.getElementById('nick'),show=document.getElementById('nickShow');
+nick.value=KI.get('kiNick','');show.textContent=nick.value||'–';
+nick.oninput=()=>{KI.set('kiNick',nick.value);show.textContent=nick.value||'–';};
+</script>
+</body>
+</html>

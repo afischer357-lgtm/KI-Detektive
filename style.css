@@ -1,0 +1,57 @@
+:root{
+  --ink:#1d2340; --muted:#5b6382; --bg:#f4f1ea; --card:#ffffff;
+  --blue:#2f6fdb; --blue-l:#e3ecfc; --green:#1f9d6b; --green-l:#ddf4ea;
+  --red:#d9473f; --red-l:#fbe3e1; --yellow:#f4b740; --yellow-l:#fdf1d6;
+  --purple:#7a4fd6; --purple-l:#ece4fb; --radius:18px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;font-family:-apple-system,"SF Pro Rounded",system-ui,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--ink);font-size:19px;line-height:1.45}
+a{color:var(--blue)}
+header.top{background:var(--ink);color:#fff;padding:14px 20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;position:sticky;top:0;z-index:10}
+header.top .logo{font-size:30px}
+header.top h1{font-size:21px;margin:0;flex:1;min-width:200px;line-height:1.2}
+header.top h1 small{display:block;font-weight:400;opacity:.75;font-size:15px}
+header.top a.home{color:#fff;text-decoration:none;background:rgba(255,255,255,.15);padding:8px 14px;border-radius:12px;font-size:16px}
+.niveau{display:flex;gap:6px;align-items:center}
+.niveau span{font-size:14px;opacity:.8;margin-right:2px}
+.niveau button{border:2px solid rgba(255,255,255,.4);background:transparent;color:#fff;border-radius:12px;padding:6px 10px;font-size:16px;min-width:52px;cursor:pointer}
+.niveau button.on{background:var(--yellow);border-color:var(--yellow);color:var(--ink);font-weight:700}
+main{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+nav.steps{display:flex;gap:8px;margin:4px 0 18px;flex-wrap:wrap}
+nav.steps button{flex:1;min-width:150px;border:none;border-radius:14px;padding:12px 10px;background:#fff;color:var(--ink);font-size:16px;font-weight:600;cursor:pointer;box-shadow:0 2px 0 rgba(0,0,0,.06)}
+nav.steps button.on{background:var(--blue);color:#fff}
+nav.steps button.done::after{content:" ✓"}
+.card{background:var(--card);border-radius:var(--radius);padding:20px 22px;margin-bottom:16px;box-shadow:0 3px 0 rgba(0,0,0,.05)}
+.card h2{margin:0 0 8px;font-size:24px}
+.card h3{margin:0 0 10px;font-size:21px}
+.center{text-align:center}
+.big{font-size:64px;line-height:1.1}
+.hint{background:var(--yellow-l);border-left:6px solid var(--yellow);padding:12px 14px;border-radius:12px;margin:12px 0}
+.info{background:var(--blue-l);border-left:6px solid var(--blue);padding:12px 14px;border-radius:12px;margin:12px 0}
+.task{background:var(--purple-l);border-left:6px solid var(--purple);padding:12px 14px;border-radius:12px;margin:12px 0}
+.task ol{margin:6px 0 0;padding-left:24px}
+.wordbank{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.wordbank b{background:#fff;border-radius:10px;padding:4px 10px;font-weight:600}
+.btn{display:inline-block;border:none;border-radius:14px;padding:14px 22px;font-size:19px;font-weight:700;cursor:pointer;background:var(--blue);color:#fff;text-decoration:none;margin:6px 6px 0 0}
+.btn.green{background:var(--green)} .btn.red{background:var(--red)} .btn.gray{background:#d8dbe6;color:var(--ink)}
+.btn.yellow{background:var(--yellow);color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+.qcount{color:var(--muted);font-size:15px;margin-bottom:4px}
+.answers{display:grid;gap:10px;margin:10px 0}
+.answer{text-align:left;border:3px solid #e2e5ef;background:#fff;border-radius:14px;padding:14px 16px;font-size:19px;cursor:pointer;color:var(--ink)}
+.answer.right{border-color:var(--green);background:var(--green-l)}
+.answer.wrong{border-color:var(--red);background:var(--red-l)}
+.answer:disabled{cursor:default}
+.feedback{margin-top:8px;padding:12px 14px;border-radius:12px;background:#f6f7fb}
+textarea{width:100%;min-height:110px;font-size:18px;border-radius:12px;border:2px solid #d8dbe6;padding:12px;font-family:inherit}
+.stamp{display:inline-block;transform:rotate(-8deg);border:4px solid var(--red);color:var(--red);font-weight:800;border-radius:14px;padding:8px 16px;font-size:22px;letter-spacing:1px;animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(2) rotate(-8deg);opacity:0}100%{transform:scale(1) rotate(-8deg);opacity:1}}
+.progress{height:12px;background:#e2e5ef;border-radius:8px;overflow:hidden;margin:6px 0 14px}
+.progress div{height:100%;background:var(--green);transition:width .3s}
+[hidden]{display:none!important}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.teacher{border:2px dashed var(--muted);background:#fbfbfd}
+.teacher::before{content:"👩‍🏫 Für die Lernbegleitung";display:block;font-size:14px;color:var(--muted);font-weight:700;margin-bottom:6px}
+@media print{header.top,nav.steps,.noprint{display:none!important} body{background:#fff}}

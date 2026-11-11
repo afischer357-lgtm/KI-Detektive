@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woche 3 · Die Gummibärchen-KI</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .play{display:grid;grid-template-columns:minmax(280px,380px) 1fr;gap:16px;align-items:start}
+  @media (max-width:760px){.play{grid-template-columns:1fr}}
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--ink);padding:6px;border-radius:16px;aspect-ratio:1}
+  .cell{background:#f7f3e8;border-radius:10px;border:none;font-size:52px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+  .cell:nth-child(even){background:#e9e1cc}
+  .cell.sel{outline:5px solid var(--yellow);outline-offset:-5px}
+  .cell.target{background:var(--green-l)!important;outline:4px dashed var(--green);outline-offset:-6px}
+  .cell.last{background:var(--red-l)!important}
+  .status{font-size:22px;font-weight:700;text-align:center;margin:10px 0}
+  .box{background:#fff;border-radius:16px;padding:14px;border:3px solid var(--purple)}
+  .box h3{margin:0 0 6px}
+  .opt{display:flex;align-items:center;gap:10px;margin:6px 0;padding:6px;border-radius:10px}
+  .opt.chosen{background:var(--purple-l)}
+  .opt svg{width:70px;height:70px;flex:none}
+  .bears{font-size:26px;letter-spacing:2px}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center}
+  .stats div{background:#fff;border-radius:14px;padding:10px}
+  .stats b{display:block;font-size:30px}
+  .curve{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+  .curve span{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;color:#fff;font-weight:700}
+  .curve .m{background:var(--blue)} .curve .k{background:var(--red)}
+  label.reward{display:flex;gap:10px;align-items:center;font-size:18px}
+  label.reward input{width:26px;height:26px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">🍬</div>
+  <h1>Woche 3 · Die Gummibärchen-KI<small>KI-Detektive</small></h1>
+  <div class="niveau"></div>
+  <a class="home" href="index.html">⌂ Start</a>
+</header>
+<main>
+<nav class="steps">
+  <button data-step="1">1 · Detektiv-Quiz</button>
+  <button data-step="2">2 · Fall des Tages</button>
+  <button data-step="3">3 · Ermittlung</button>
+  <button data-step="4">4 · Exit-Ticket</button>
+</nav>
+
+<section class="step" data-step="1">
+  <div class="card"><h2>🔍 Was weißt du noch von letzter Woche?</h2></div>
+  <div id="quiz"></div>
+</section>
+
+<section class="step" data-step="2">
+  <div class="card center">
+    <div class="big">🎮🤖</div>
+    <h2>Fall Nr. 3: Kann eine Maschine ein Spiel lernen?</h2>
+    <p>Die Maschine kennt nur die Spielregeln. Niemand verrät ihr einen Trick.</p>
+    <p><b>Kann sie trotzdem lernen, gut zu spielen? Was meinst du?</b></p>
+  </div>
+  <div class="card teacher">
+    <p><b>Ablauf:</b> fobizz-Umfrage: „Kann die Maschine lernen, gegen dich zu gewinnen? Ja / Nein / Weiß nicht.“ Ergebnis zeigen, <b>nicht</b> auflösen. Am Ende der Stunde dieselbe Umfrage nochmal.</p>
+    <p><b>Spielregeln vorführen</b> (AirPlay): Ein Spiel gegen die Maschine spielen und laut denken.</p>
+    <p><b>Hintergrund:</b> Das Spiel heißt Hexapawn. Die Idee mit den Gummibärchen-Kisten stammt von Martin Gardner (1962). Die Maschine spielt als Zweite und kann mit dem richtigen Spiel immer gewinnen. Nach etwa 10–15 Niederlagen hat sie das meist gelernt.</p>
+  </div>
+</section>
+
+<section class="step" data-step="3">
+  <div class="card">
+    <h2>🍬 Ermittlung: Spiel gegen die Gummibärchen-KI</h2>
+    <div class="info">
+      <b>Spielregeln</b><br>
+      🙂 Du spielst unten, 🤖 die Maschine oben. Du fängst an.<br>
+      ⬆️ Eine Figur zieht <b>1 Feld geradeaus</b> nach vorne, wenn das Feld frei ist.<br>
+      ↗️ Eine Figur <b>schlägt schräg nach vorne</b> eine gegnerische Figur.<br>
+      🏁 <b>Gewonnen hat</b>, wer die andere Seite erreicht, alle Gegner schlägt oder wenn der Gegner nicht mehr ziehen kann.
+    </div>
+    <div class="hint" data-nv="1 2 3">
+      <b>So lernt die Maschine:</b> Für jede Spielstellung hat sie eine <b>Kiste</b>. Für jeden möglichen Zug liegt ein <b>Gummibärchen 🍬</b> darin. Sie zieht zufällig ein Gummibärchen und macht diesen Zug.
+      <b>Verliert sie</b>, wird das Gummibärchen vom letzten Zug <b>aufgegessen</b>. Diesen schlechten Zug macht sie dann nie wieder!
+    </div>
+    <label class="reward" data-nv="3"><input type="checkbox" id="reward"> Belohnung einschalten: Gewinnt die Maschine, bekommt ihr letzter Zug ein Gummibärchen dazu.</label>
+  </div>
+
+  <div class="play">
+    <div>
+      <div class="board" id="board"></div>
+      <div class="status" id="status"></div>
+      <div class="center"><button class="btn" id="newBtn" onclick="newGame()" hidden>▶️ Neues Spiel</button></div>
+    </div>
+    <div>
+      <div class="box" id="box"><h3>🗃️ Kiste der Maschine</h3><p>Hier siehst du, welche Züge die Maschine in der aktuellen Stellung zur Auswahl hat.</p></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <h3>📈 Lernkurve</h3>
+    <div class="stats">
+      <div><b id="sGames">0</b>Spiele</div>
+      <div><b id="sHuman">0</b>🙂 Siege Mensch</div>
+      <div><b id="sKI">0</b>🤖 Siege Maschine</div>
+    </div>
+    <p style="margin-top:12px">Jeder Kreis ist ein Spiel: <span style="color:var(--blue)">● blau = du gewinnst</span>, <span style="color:var(--red)">● rot = Maschine gewinnt</span></p>
+    <div class="curve" id="curve"></div>
+    <p>🍬 Aufgegessene Gummibärchen: <b id="sEaten">0</b> · 🗃️ Kisten im Gedächtnis: <b id="sBoxes">0</b></p>
+    <button class="btn gray" id="forgetBtn" onclick="forget()">🧽 Gedächtnis der Maschine löschen</button>
+  </div>
+
+  <div class="task">
+    <b>📌 Auftrag</b>
+    <ol data-nv="1">
+      <li>Spiele mindestens <b>15 Spiele</b>.</li>
+      <li>Mache einen <b>Screenshot</b> von deiner Lernkurve.</li>
+      <li>Füge ihn in <b>Keynote</b> ein und ergänze: <i>„Am Anfang hat ______ gewonnen. Am Ende hat ______ gewonnen. Die Maschine hat gelernt, weil ______.“</i></li>
+    </ol>
+    <div class="wordbank" data-nv="1"><b>ich</b><b>die Maschine</b><b>schlechte Züge</b><b>gelöscht</b><b>Gummibärchen</b></div>
+    <ol data-nv="2">
+      <li>Spiele mindestens <b>15 Spiele</b> und mache einen Screenshot der Lernkurve.</li>
+      <li>Beschreibe in <b>Keynote</b>, wie sich die Lernkurve verändert.</li>
+      <li>Erkläre in 2–3 Sätzen, wie die Maschine gelernt hat, ohne die Tricks zu kennen.</li>
+    </ol>
+    <ol data-nv="3">
+      <li>Spiele 15 Spiele <b>ohne</b> Belohnung. Lösche dann das Gedächtnis und spiele 15 Spiele <b>mit</b> Belohnung. Mache beide Male einen Screenshot.</li>
+      <li>Vergleiche beide Lernkurven in <b>Keynote</b>.</li>
+      <li>Beurteile: Ist die Gummibärchen-Maschine „intelligent“? Begründe deine Meinung.</li>
+    </ol>
+  </div>
+</section>
+
+<section class="step" data-step="4">
+  <div class="card"><h2>🎫 Exit-Ticket</h2></div>
+  <div id="exit"></div>
+</section>
+</main>
+
+<script src="common.js"></script>
+<script>
+KI.initSteps();
+KI.initNiveau();
+
+KI.quiz(document.getElementById('quiz'), [
+  {q:'Wie heißen die Beispiele, aus denen eine Maschine lernt?', a:['Trainingsdaten','Spielregeln','Hausaufgaben','Passwörter'], c:0,
+   h:'Das Wort kennst du vom Sport: Vor einem Spiel geht man zum …',
+   e:'Die Beispiele zum Lernen heißen <b>Trainingsdaten</b>.'},
+  {q:'Wozu sind die Testdaten da?', a:['Damit die Maschine schneller wird','Um zu prüfen, ob die Maschine bei neuen Beispielen richtig liegt','Damit die Maschine Strom spart'], c:1,
+   h:'Bei einem Test in der Schule wird geprüft, ob du etwas kannst. Was wird bei der Maschine geprüft?',
+   e:'Mit <b>Testdaten</b> prüft man, ob die Maschine auch <b>neue</b> Beispiele richtig erkennt.'},
+  {q:'Die Maschine hat mehr Trainingsbeispiele bekommen. Was passiert meistens?', a:['Sie wird schlechter.','Sie wird besser.','Nichts.'], c:1,
+   h:'Denk an dein Balkendiagramm von letzter Woche. Wie haben sich die Balken verändert?',
+   e:'Mit mehr guten Beispielen wird die Maschine meistens <b>besser</b>.'},
+  {q:'Du hast beim Trainieren aus Versehen falsch sortiert. Was passiert?', a:['Die Maschine merkt den Fehler sofort.','Die Maschine lernt den Fehler mit.'], c:1,
+   h:'Die Maschine kennt die Regel nicht. Sie glaubt alles, was du ihr zeigst.',
+   e:'Die Maschine lernt, was man ihr zeigt – <b>auch Fehler</b>. Gute Daten sind darum sehr wichtig!'}
+], () => KI.markDone(1));
+
+KI.exitTicket(document.getElementById('exit'), 3,
+  {q:'Wie hat die Gummibärchen-KI gelernt?', a:['Jemand hat ihr die besten Züge verraten.','Züge, die zu Niederlagen geführt haben, wurden gelöscht.','Sie hat im Internet nachgeschaut.','Sie hat gar nicht gelernt.'], c:1,
+   h:'Was ist mit den Gummibärchen passiert, wenn du gewonnen hast?',
+   e:'Genau! Schlechte Züge wurden <b>bestraft</b> (Gummibärchen aufgegessen). So lernt die Maschine durch <b>Ausprobieren</b>.'},
+  'Ist die Gummibärchen-Maschine schlau? Was meinst du?');
+
+/* ---------- Hexapawn ---------- */
+const H='H', M='M', E='.';
+const START = 'MMM...HHH';
+const COLORS = ['#e5534b','#2fa968','#3b7be0','#f08a24','#7a4fd6','#e0479e'];
+let board, turn, sel, over, history, memory, stats, lastMove;
+function load(){
+  memory = KI.get('hexMemory', {});
+  stats = KI.get('hexStats', {games:0,h:0,m:0,eaten:0,curve:[]});
+}
+function save(){ KI.set('hexMemory', memory); KI.set('hexStats', stats); }
+
+function movesFor(b,P){
+  const dir = P===H?-1:1, opp = P===H?M:H, out=[];
+  for(let i=0;i<9;i++){ if(b[i]!==P) continue;
+    const r=Math.floor(i/3), c=i%3, nr=r+dir; if(nr<0||nr>2) continue;
+    if(b[nr*3+c]===E) out.push([i,nr*3+c]);
+    for(const dc of [-1,1]){ const nc=c+dc; if(nc<0||nc>2) continue; if(b[nr*3+nc]===opp) out.push([i,nr*3+nc]); }
+  }
+  return out;
+}
+function apply(b,[f,t]){ const a=b.split(''); a[t]=a[f]; a[f]=E; return a.join(''); }
+function winnerAfter(b,P,t){
+  const opp = P===H?M:H;
+  if(P===H && t<3) return H;
+  if(P===M && t>5) return M;
+  if(!b.includes(opp)) return P;
+  if(movesFor(b,opp).length===0) return P;
+  return null;
+}
+
+function newGame(){
+  board=START; turn=H; sel=null; over=false; history=[]; lastMove=null;
+  document.getElementById('newBtn').hidden=true;
+  setStatus('Du bist dran! Tippe auf eine 🙂-Figur.');
+  document.getElementById('box').innerHTML='<h3>🗃️ Kiste der Maschine</h3><p>Hier siehst du gleich, welche Züge die Maschine zur Auswahl hat.</p>';
+  render();
+}
+function setStatus(t){ document.getElementById('status').textContent=t; }
+function render(){
+  const targets = sel!==null ? movesFor(board,H).filter(m=>m[0]===sel).map(m=>m[1]) : [];
+  document.getElementById('board').innerHTML = board.split('').map((p,i)=>
+    `<button class="cell ${i===sel?'sel':''} ${targets.includes(i)?'target':''} ${lastMove&&lastMove.includes(i)&&turn===H?'last':''}" onclick="tap(${i})" aria-label="Feld ${i+1}">${p===H?'🙂':p===M?'🤖':''}</button>`).join('');
+  document.getElementById('sGames').textContent=stats.games;
+  document.getElementById('sHuman').textContent=stats.h;
+  document.getElementById('sKI').textContent=stats.m;
+  document.getElementById('sEaten').textContent=stats.eaten;
+  document.getElementById('sBoxes').textContent=Object.keys(memory).length;
+  document.getElementById('curve').innerHTML = stats.curve.map((w,i)=>`<span class="${w}">${i+1}</span>`).join('');
+}
+function tap(i){
+  if(over||turn!==H) return;
+  if(board[i]===H){ sel=i; render(); return; }
+  if(sel===null) return;
+  const mv = movesFor(board,H).find(m=>m[0]===sel&&m[1]===i);
+  if(!mv){ return; }
+  board=apply(board,mv); sel=null; lastMove=null;
+  const w = winnerAfter(board,H,mv[1]);
+  render();
+  if(w) return end(H);
+  turn=M; setStatus('🤖 Die Maschine greift in ihre Kiste …');
+  setTimeout(machine, 700);
+}
+function miniSVG(b,mv,color){
+  let s='<svg viewBox="0 0 90 90">';
+  for(let i=0;i<9;i++){ const x=(i%3)*30, y=Math.floor(i/3)*30;
+    s+=`<rect x="${x+1}" y="${y+1}" width="28" height="28" rx="4" fill="${(i%2)?'#e9e1cc':'#f7f3e8'}"/>`;
+    if(b[i]!==E) s+=`<circle cx="${x+15}" cy="${y+15}" r="9" fill="${b[i]===H?'#3b7be0':'#888'}"/>`; }
+  const fx=(mv[0]%3)*30+15, fy=Math.floor(mv[0]/3)*30+15, tx=(mv[1]%3)*30+15, ty=Math.floor(mv[1]/3)*30+15;
+  s+=`<line x1="${fx}" y1="${fy}" x2="${tx}" y2="${ty-4}" stroke="${color}" stroke-width="5" stroke-linecap="round"/>
+      <circle cx="${tx}" cy="${ty}" r="6" fill="${color}"/>`;
+  return s+'</svg>';
+}
+function showBox(entry, chosen, note){
+  const total = entry.beads.reduce((a,b)=>a+b,0);
+  document.getElementById('box').innerHTML = `<h3>🗃️ Kiste für diese Stellung</h3>
+    <p>${total} Gummibärchen in der Kiste. ${note||''}</p>
+    ${entry.moves.map((mv,j)=>`<div class="opt ${j===chosen?'chosen':''}">${miniSVG(board,mv,COLORS[j%COLORS.length])}
+      <div><div class="bears" style="color:${COLORS[j%COLORS.length]}">${entry.beads[j]?'🍬'.repeat(entry.beads[j]):'<span style="font-size:16px;color:#5b6382">leer – aufgegessen</span>'}</div>
+      ${j===chosen?'<b>⬅️ gezogen!</b>':''}</div></div>`).join('')}`;
+}
+function machine(){
+  let entry = memory[board];
+  if(!entry){ const mv=movesFor(board,M); entry=memory[board]={moves:mv, beads:mv.map(()=>1)}; }
+  const total = entry.beads.reduce((a,b)=>a+b,0);
+  if(total===0){
+    showBox(entry,-1,'<b>Die Kiste ist leer – die Maschine gibt auf!</b>');
+    return end(H);
+  }
+  let r=Math.random()*total, j=0;
+  while(r>=entry.beads[j]){ r-=entry.beads[j]; j++; }
+  showBox(entry,j);
+  history.push({key:board, j});
+  const mv=entry.moves[j];
+  board=apply(board,mv); lastMove=mv; turn=H;
+  const w=winnerAfter(board,M,mv[1]);
+  render();
+  if(w) return end(M);
+  setStatus('Du bist dran!');
+}
+function end(w){
+  over=true; stats.games++;
+  if(w===H){
+    stats.h++; stats.curve.push('m');
+    const last=history[history.length-1];
+    if(last && memory[last.key].beads[last.j]>0){ memory[last.key].beads[last.j]--; stats.eaten++; }
+    setStatus('🎉 Du hast gewonnen! Die Maschine verliert ein Gummibärchen 🍬.');
+  } else {
+    stats.m++; stats.curve.push('k');
+    const last=history[history.length-1];
+    if(document.getElementById('reward').checked && last){ memory[last.key].beads[last.j]++; }
+    setStatus('🤖 Die Maschine hat gewonnen!');
+  }
+  save(); render();
+  document.getElementById('newBtn').hidden=false;
+  if(stats.games>=15) KI.markDone(3);
+}
+let forgetArmed=false;
+function forget(){
+  const b=document.getElementById('forgetBtn');
+  if(!forgetArmed){ forgetArmed=true; b.textContent='❗ Wirklich löschen? Nochmal tippen'; setTimeout(()=>{forgetArmed=false;b.textContent='🧽 Gedächtnis der Maschine löschen';},4000); return; }
+  forgetArmed=false; b.textContent='🧽 Gedächtnis der Maschine löschen';
+  memory={}; stats={games:0,h:0,m:0,eaten:0,curve:[]}; save(); newGame();
+}
+load(); newGame();
+</script>
+</body>
+</html>

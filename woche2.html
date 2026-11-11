@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Woche 2 · Trainiere die Maschine</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .bigmon{display:flex;justify-content:center;margin:8px 0}
+  .choice{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .choice .btn{font-size:22px;padding:16px 24px;min-width:210px}
+  .night{background:#2b2f63!important;color:#fff!important}
+  .day{background:var(--yellow)!important;color:var(--ink)!important}
+  .strip{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+  .strip > div{border-radius:14px;padding:8px;min-height:80px}
+  .strip .n{background:#e4e5f5} .strip .d{background:var(--yellow-l)}
+  .strip svg{width:54px;height:54px}
+  .tcard{background:#fff;border-radius:16px;padding:10px;text-align:center;border:3px solid #e2e5ef}
+  .tcard.ok{border-color:var(--green);background:var(--green-l)}
+  .tcard.bad{border-color:var(--red);background:var(--red-l)}
+  .tcard svg{width:100px;height:100px}
+  .tcard .pred{font-weight:700;margin:4px 0}
+  .tcard .judge{display:flex;gap:6px;justify-content:center}
+  .tcard .judge button{font-size:22px;border:2px solid #d8dbe6;background:#fff;border-radius:10px;padding:4px 12px}
+  .tcard .judge button.on{border-color:var(--ink);background:var(--blue-l)}
+  .bars{display:flex;align-items:flex-end;gap:12px;height:180px;padding:10px;border-bottom:3px solid var(--ink);margin-top:10px}
+  .bar{flex:1;max-width:70px;background:var(--green);border-radius:10px 10px 0 0;position:relative;text-align:center;color:#fff;font-weight:700;font-size:16px}
+  .bar span{position:absolute;bottom:-28px;left:0;right:0;color:var(--ink);font-weight:400;font-size:14px}
+  .thinking{font-size:60px;animation:wob .5s infinite alternate}
+  @keyframes wob{from{transform:rotate(-10deg)}to{transform:rotate(10deg)}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">👾</div>
+  <h1>Woche 2 · Trainiere die Maschine<small>KI-Detektive</small></h1>
+  <div class="niveau"></div>
+  <a class="home" href="index.html">⌂ Start</a>
+</header>
+<main>
+<nav class="steps">
+  <button data-step="1">1 · Detektiv-Quiz</button>
+  <button data-step="2">2 · Fall des Tages</button>
+  <button data-step="3">3 · Ermittlung</button>
+  <button data-step="4">4 · Exit-Ticket</button>
+</nav>
+
+<section class="step" data-step="1">
+  <div class="card"><h2>🔍 Was weißt du noch von letzter Woche?</h2></div>
+  <div id="quiz"></div>
+</section>
+
+<section class="step" data-step="2">
+  <div class="card center">
+    <div class="big">🐶❓</div>
+    <h2>Fall Nr. 2: Woher weißt du, was ein Hund ist?</h2>
+    <p>Niemand hat dir eine Regel wie „4 Beine + Fell + bellt = Hund“ beigebracht.</p>
+    <p><b>Wie hast du es dann gelernt?</b></p>
+  </div>
+  <div class="card teacher">
+    <p><b>Ablauf:</b> Kurzes Unterrichtsgespräch. Sammle die Antworten auf einer fobizz-Pinnwand (Spalte „So habe ich gelernt“).</p>
+    <p><b>Ziel:</b> Die Lernenden erkennen: Wir lernen aus <b>vielen Beispielen</b> („Das ist ein Hund“ – „Das ist auch ein Hund“). Genau so lernt eine Maschine. Die Beispiele heißen <b>Trainingsdaten</b>.</p>
+    <p><b>Überleitung:</b> „Heute seid ihr die Trainer:innen einer Maschine!“</p>
+  </div>
+</section>
+
+<section class="step" data-step="3">
+  <div class="card">
+    <h2>👾 Ermittlung: Trainiere die Monster-Maschine</h2>
+    <p>Die Maschine soll lernen, <b>Nachtmonster 🌙</b> und <b>Tagmonster ☀️</b> zu unterscheiden. Sie kennt die Regel <u>nicht</u>. Du zeigst ihr Beispiele – das sind die <b>Trainingsdaten</b>.</p>
+    <div class="info" id="ruleBox"></div>
+    <div id="ownRule" hidden>
+      <p><b>Deine geheime Regel</b> (zum Beispiel: „Nachtmonster haben Zähne und Punkte“):</p>
+      <textarea id="ownRuleText" style="min-height:70px" placeholder="Meine Regel: Nachtmonster sind …"></textarea>
+    </div>
+    <button class="btn green" id="startBtn" onclick="startTraining()">Los geht’s ➜</button>
+  </div>
+  <div id="stage"></div>
+  <div id="results" hidden>
+    <div class="card">
+      <h3>📈 So gut war die Maschine in jeder Runde</h3>
+      <div class="bars" id="bars"></div><div style="height:30px"></div>
+      <button class="btn" onclick="startTraining(true)">➕ 8 weitere Trainingsbeispiele</button>
+      <button class="btn gray" onclick="resetAll()">🔄 Ganz neu anfangen</button>
+    </div>
+    <div class="card">
+      <h3>🧠 Wie macht die Maschine das?</h3>
+      <p>Bei jedem neuen Monster sucht die Maschine die <b>3 Trainingsmonster, die am ähnlichsten aussehen</b>. Was die meisten davon sind, das sagt sie auch für das neue Monster.</p>
+      <p data-nv="3">Sie vergleicht 5 Merkmale: Farbe, Anzahl der Augen, Hörner, Zähne und Punkte. Sie weiß nicht, welches Merkmal wichtig ist – das muss sie aus den Beispielen „herausfinden“.</p>
+    </div>
+    <div class="task">
+      <b>📌 Auftrag: Deine Merkkarte in Keynote</b>
+      <ol data-nv="1">
+        <li>Spiele mindestens <b>3 Runden</b>.</li>
+        <li>Mache einen <b>Screenshot</b> vom Balken-Diagramm (Ein/Aus-Taste + Lautstärke-hoch gleichzeitig drücken).</li>
+        <li>Öffne <b>Keynote</b> und füge den Screenshot ein.</li>
+        <li>Schreibe den Satz darunter und fülle die Lücken: <i>„Je mehr ______ die Maschine bekommt, desto ______ wird sie.“</i></li>
+      </ol>
+      <div class="wordbank" data-nv="1"><b>Beispiele</b><b>besser</b><b>Trainingsdaten</b><b>schlechter</b></div>
+      <ol data-nv="2">
+        <li>Spiele mindestens <b>3 Runden</b> und mache einen Screenshot vom Diagramm.</li>
+        <li>Erstelle in <b>Keynote</b> eine Folie mit dem Screenshot.</li>
+        <li>Beschreibe in 2 Sätzen, was mit dem Ergebnis passiert, wenn die Maschine mehr Trainingsdaten bekommt.</li>
+      </ol>
+      <ol data-nv="3">
+        <li>Spiele mit deiner eigenen Regel mindestens <b>3 Runden</b>. Mache einen Screenshot.</li>
+        <li>Erstelle in <b>Keynote</b> eine Folie mit Screenshot und deiner Regel.</li>
+        <li>Erkläre: Warum war die Maschine bei deiner Regel gut oder schlecht? Was passiert, wenn du beim Trainieren einen Fehler machst?</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="step" data-step="4">
+  <div class="card"><h2>🎫 Exit-Ticket</h2></div>
+  <div id="exit"></div>
+</section>
+</main>
+
+<script src="common.js"></script>
+<script>
+KI.initSteps();
+
+KI.quiz(document.getElementById('quiz'), [
+  {q:'Was ist ein Beispiel für KI?', a:['Ein Lichtschalter','Ein Wecker','Eine Übersetzer-App','Ein Zahlenschloss'], c:2,
+   h:'Welches Gerät musste aus ganz vielen Texten lernen? Die anderen machen immer genau dasselbe.',
+   e:'Die <b>Übersetzer-App</b> hat aus sehr vielen Texten gelernt. Die anderen Dinge arbeiten nach festen Regeln.'},
+  {q:'Ein Taschenrechner rechnet 2 + 2 = 4. Ist das KI?', a:['Ja, er ist ja schlau.','Nein, er arbeitet nach festen Regeln.'], c:1,
+   h:'Lernt der Taschenrechner etwas dazu, wenn du ihn oft benutzt?',
+   e:'Ein Taschenrechner lernt nichts dazu. Er folgt <b>festen Regeln</b>.'},
+  {q:'Was kann eine KI besonders gut?', a:['Muster erkennen','Gefühle haben','Träumen'], c:0,
+   h:'Gefühle und Träume haben nur Lebewesen. Was macht das Handy, wenn es dein Gesicht entsperrt?',
+   e:'KI ist stark im <b>Muster erkennen</b> – zum Beispiel Gesichter oder Sprache.'}
+], () => KI.markDone(1));
+
+KI.exitTicket(document.getElementById('exit'), 2,
+  {q:'Was braucht eine Maschine, um etwas zu lernen?', a:['Ein Gehirn','Viele Beispiele (Trainingsdaten)','Eine Brille','Sehr viel Strom und sonst nichts'], c:1,
+   h:'Was hast du der Monster-Maschine gezeigt, damit sie lernt?',
+   e:'Eine Maschine lernt aus <b>vielen Beispielen</b>. Diese Beispiele heißen <b>Trainingsdaten</b>.'},
+  'Was ist passiert, als du der Maschine mehr Beispiele gegeben hast?');
+
+/* ---------- Monster ---------- */
+const COLORS = ['#e5534b','#3b7be0','#2fa968','#f2c230'];
+const CNAMES = ['rot','blau','grün','gelb'];
+function randMonster(){
+  return {f:Math.floor(Math.random()*4), a:1+Math.floor(Math.random()*3), h:Math.random()<.5?1:0, z:Math.random()<.5?1:0, p:Math.random()<.5?1:0};
+}
+function svg(m){
+  const c = COLORS[m.f];
+  let s = `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">`;
+  if(m.h) s += `<polygon points="30,38 22,6 46,28" fill="#6b4b2a"/><polygon points="90,38 98,6 74,28" fill="#6b4b2a"/>`;
+  s += `<ellipse cx="60" cy="68" rx="44" ry="44" fill="${c}" stroke="#1d2340" stroke-width="3"/>`;
+  if(m.p) s += `<circle cx="32" cy="82" r="6" fill="rgba(0,0,0,.18)"/><circle cx="88" cy="86" r="5" fill="rgba(0,0,0,.18)"/><circle cx="76" cy="100" r="4" fill="rgba(0,0,0,.18)"/>`;
+  const ex = m.a===1?[60]:m.a===2?[44,76]:[36,60,84];
+  ex.forEach(x=> s += `<circle cx="${x}" cy="56" r="11" fill="#fff" stroke="#1d2340" stroke-width="2"/><circle cx="${x+2}" cy="58" r="5" fill="#1d2340"/>`);
+  if(m.z) s += `<path d="M38 84 Q60 100 82 84 Z" fill="#7a1f1f" stroke="#1d2340" stroke-width="2"/><polygon points="44,85 49,93 53,87" fill="#fff"/><polygon points="66,87 71,93 76,85" fill="#fff"/>`;
+  else s += `<path d="M42 84 Q60 98 78 84" fill="none" stroke="#1d2340" stroke-width="4" stroke-linecap="round"/>`;
+  return s + `</svg>`;
+}
+const RULES = {
+  1:{text:'<b>Regel ★:</b> Nachtmonster 🌙 haben <b>Hörner</b>. Alle anderen sind Tagmonster ☀️.', f:m=>m.h===1},
+  2:{text:'<b>Regel ★★:</b> Nachtmonster 🌙 haben <b>Hörner</b> – <b>außer sie sind gelb</b>. Alle anderen sind Tagmonster ☀️.', f:m=>m.h===1&&m.f!==3},
+  3:{text:'<b>★★★:</b> Denk dir eine <b>eigene geheime Regel</b> aus. Du sortierst danach. Danach prüfst du selbst, ob die Maschine richtig liegt.', f:null}
+};
+function dist(a,b){ return (a.f!==b.f)+(a.a!==b.a)+(a.h!==b.h)+(a.z!==b.z)+(a.p!==b.p); }
+function predict(m){
+  const k = Math.min(3, train.length);
+  const near = train.map(t=>({t,d:dist(t.m,m)})).sort((x,y)=>x.d-y.d || Math.random()-.5).slice(0,k);
+  const night = near.filter(n=>n.t.night).length;
+  return night*2 > k;
+}
+
+let train=[], rounds=[], batch=[], bi=0, mistakes=0, test=[], testSet=[];
+function rule(){ return RULES[KI.niveau()]; }
+function setupRule(){
+  document.getElementById('ruleBox').innerHTML = rule().text;
+  document.getElementById('ownRule').hidden = KI.niveau()!==3;
+}
+function resetAll(){
+  train=[]; rounds=[]; mistakes=0; testSet=Array.from({length:10}, randMonster);
+  document.getElementById('stage').innerHTML='';
+  document.getElementById('results').hidden=true;
+  document.getElementById('startBtn').hidden=false;
+  setupRule();
+}
+function startTraining(more){
+  if(KI.niveau()===3 && document.getElementById('ownRuleText').value.trim().length<5){
+    document.getElementById('ownRuleText').focus();
+    document.getElementById('ownRuleText').placeholder='⚠️ Schreib zuerst deine Regel auf!';
+    return;
+  }
+  document.getElementById('startBtn').hidden=true;
+  document.getElementById('results').hidden=true;
+  batch = Array.from({length: train.length===0 ? 4 : 8}, randMonster); bi=0;
+  showTrain();
+}
+function showTrain(){
+  const st = document.getElementById('stage');
+  if(bi>=batch.length){
+    const mis = rule().f ? `<p>Du hast beim Sortieren <b>${mistakes}</b> Fehler gemacht. ${mistakes?'Achtung: Die Maschine lernt auch deine Fehler mit!':'Super genau!'}</p>`:'';
+    st.innerHTML = `<div class="card center"><h3>Die Maschine hat jetzt ${train.length} Trainingsbeispiele.</h3>${mis}
+      <button class="btn green" onclick="learn()">🧠 Maschine lernen und testen lassen</button></div>`+stripHTML();
+    return;
+  }
+  const m = batch[bi];
+  st.innerHTML = `<div class="card center">
+    <div class="qcount">Trainingsbeispiel ${bi+1} von ${batch.length}</div>
+    <div class="progress"><div style="width:${bi/batch.length*100}%"></div></div>
+    <p><b>Was ist dieses Monster?</b></p>
+    <div class="bigmon" style="width:180px;height:180px;margin:0 auto">${svg(m)}</div>
+    <div class="choice">
+      <button class="btn night" onclick="label(true)">🌙 Nachtmonster</button>
+      <button class="btn day" onclick="label(false)">☀️ Tagmonster</button>
+    </div></div>` + stripHTML();
+}
+function stripHTML(){
+  return `<div class="card"><b>Trainingsdaten der Maschine</b><div class="strip">
+    <div class="n"><b>🌙</b> ${train.filter(t=>t.night).map(t=>svg(t.m)).join('')}</div>
+    <div class="d"><b>☀️</b> ${train.filter(t=>!t.night).map(t=>svg(t.m)).join('')}</div></div></div>`;
+}
+function label(night){
+  const m = batch[bi];
+  if(rule().f && rule().f(m)!==night) mistakes++;
+  train.push({m,night}); bi++; showTrain();
+}
+function learn(){
+  const st = document.getElementById('stage');
+  st.innerHTML = `<div class="card center"><div class="thinking">🤖</div><h3>Die Maschine vergleicht die Monster …</h3></div>`;
+  setTimeout(showTest, 1500);
+}
+function showTest(){
+  test = testSet.map(m=>({m, p:predict(m), judge:null}));
+  const auto = !!rule().f;
+  const st = document.getElementById('stage');
+  st.innerHTML = `<div class="card"><h3>🧪 Test: 10 neue Monster</h3>
+    <p>Diese Monster hat die Maschine noch nie gesehen. Das sind die <b>Testdaten</b>. In jeder Runde kommen dieselben Testmonster – so kann man fair vergleichen.</p>
+    ${auto?'':'<p><b>Prüfe selbst nach deiner Regel:</b> Tippe ✔, wenn die Maschine richtig liegt, sonst ✘.</p>'}
+    <div class="grid">${test.map((t,i)=>{
+      const ok = auto ? rule().f(t.m)===t.p : null;
+      return `<div class="tcard ${ok===null?'':ok?'ok':'bad'}" id="tc${i}">${svg(t.m)}
+        <div class="pred">Maschine: ${t.p?'🌙':'☀️'}</div>
+        ${auto ? (ok?'✔ richtig':`✘ falsch – eigentlich ${rule().f(t.m)?'🌙':'☀️'}`)
+              : `<div class="judge"><button onclick="judge(${i},true)">✔</button><button onclick="judge(${i},false)">✘</button></div>`}
+      </div>`;}).join('')}</div>
+    ${auto?'':'<button class="btn green" id="evalBtn" disabled onclick="finishRound()" style="margin-top:12px">Auswerten</button>'}</div>`;
+  if(auto) finishRound(true);
+}
+function judge(i,ok){
+  test[i].judge=ok;
+  const c=document.getElementById('tc'+i);
+  c.className='tcard '+(ok?'ok':'bad');
+  c.querySelectorAll('.judge button').forEach((b,j)=>b.classList.toggle('on',(j===0)===ok));
+  document.getElementById('evalBtn').disabled = test.some(t=>t.judge===null);
+}
+function finishRound(auto){
+  const right = auto ? test.filter(t=>rule().f(t.m)===t.p).length : test.filter(t=>t.judge).length;
+  rounds.push({n:train.length, right});
+  const st = document.getElementById('stage');
+  st.insertAdjacentHTML('beforeend', `<div class="card center"><h2>Die Maschine hatte ${right} von 10 richtig!</h2>
+    <p>${right>=9?'Wow, sie hat das Muster fast perfekt gelernt!':right>=7?'Schon ziemlich gut. Mit mehr Beispielen wird sie noch besser.':'Sie ist noch unsicher. Gib ihr mehr Trainingsbeispiele!'}</p></div>`);
+  if(!auto) document.getElementById('evalBtn').hidden=true;
+  document.getElementById('bars').innerHTML = rounds.map(r=>`<div class="bar" style="height:${Math.max(8,r.right*10)}%">${r.right}<span>${r.n} Bsp.</span></div>`).join('');
+  document.getElementById('results').hidden=false;
+  KI.applyNiveau();
+  if(rounds.length>=3) KI.markDone(3);
+}
+KI.onNiveau(()=>resetAll());
+KI.initNiveau();
+resetAll();
+</script>
+</body>
+</html>
