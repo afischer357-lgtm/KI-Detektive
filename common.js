@@ -120,7 +120,8 @@ const KI = (() => {
       const d = el.querySelector('#exitDone');
       d.hidden = false;
       d.innerHTML = `<p>Woche ${week} geschafft!</p><div class="stamp">🕵️ GELÖST · WOCHE ${week}</div>
-        <p style="margin-top:20px"><a class="btn yellow" href="ausweis.html">Zu meinem Ausweis ➜</a></p>`;
+        <div class="hint" style="margin-top:20px;text-align:left">🔐 <b>Dein neuer Sicherungs-Code:</b> <span style="font-size:26px;font-weight:800;letter-spacing:2px">${stampsToCode()}</span><br>📸 Mach jetzt einen <b>Screenshot</b>! Mit dem Code bekommst du deine Stempel zurück, falls sie einmal verschwinden.</div>
+        <p style="margin-top:12px"><a class="btn yellow" href="ausweis.html">Zu meinem Ausweis ➜</a></p>`;
       markDone(4);
     };
   }
@@ -136,7 +137,41 @@ const KI = (() => {
   }
   function stamps() { return get('kiStempel', {}); }
 
+
+  /* ---------- Sicherungs-Code für die Stempel ----------
+     Die Stempel stecken verschlüsselt in einem kurzen Code (z. B. KD-7F3Q).
+     Mit dem Code lassen sich die Stempel auf jedem Gerät wiederherstellen.
+     Kein Server, keine Namen: Der Code enthält nur, welche Wochen gelöst sind. */
+  const ABC = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'; // ohne 0/O/1/I
+  function stampsToCode() {
+    const s = stamps(); let n = 0;
+    for (let w = 1; w <= 10; w++) if (s[w]) n |= 1 << (w - 1);
+    const chk = (n * 397 + 113) % 1021;            // 10-Bit-Prüfzahl
+    let v = ((n ^ 0x2B5) << 10) | chk, out = '';
+    for (let i = 0; i < 4; i++) { out = ABC[v & 31] + out; v >>= 5; }
+    return 'KD-' + out;
+  }
+  function codeToWeeks(code) {
+    const c = String(code).toUpperCase().replace(/[^A-Z0-9]/g, '').replace(/^KD/, '');
+    if (c.length !== 4) return null;
+    let v = 0;
+    for (const ch of c) { const i = ABC.indexOf(ch); if (i < 0) return null; v = (v << 5) | i; }
+    const n = (v >> 10) ^ 0x2B5, chk = v & 1023;
+    if (n < 0 || n > 1023 || (n * 397 + 113) % 1021 !== chk) return null;
+    const weeks = [];
+    for (let w = 1; w <= 10; w++) if (n & (1 << (w - 1))) weeks.push(w);
+    return weeks;
+  }
+  function restoreFromCode(code) {
+    const weeks = codeToWeeks(code);
+    if (!weeks) return null;
+    const s = stamps();
+    weeks.forEach(w => { if (!s[w]) s[w] = 'wiederhergestellt'; });
+    set('kiStempel', s);
+    return weeks;
+  }
+
   function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
 
-  return { get, set, niveau, initNiveau, onNiveau, applyNiveau, initSteps, showStep, markDone, quiz, exitTicket, stamps, shuffle };
+  return { stampsToCode, codeToWeeks, restoreFromCode, get, set, niveau, initNiveau, onNiveau, applyNiveau, initSteps, showStep, markDone, quiz, exitTicket, stamps, shuffle };
 })();

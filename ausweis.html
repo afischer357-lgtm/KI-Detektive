@@ -39,6 +39,18 @@
     <p><b>Gelöste Fälle:</b> <span id="count">0</span> von 10</p>
     <div class="slots" id="slots"></div>
   </div>
+  <div class="card noprint" style="border:3px solid var(--yellow)">
+    <h3>🔐 Mein Sicherungs-Code</h3>
+    <p>Mit diesem Code bekommst du deine Stempel zurück, falls sie verschwinden.</p>
+    <p style="font-size:34px;font-weight:800;letter-spacing:3px;margin:6px 0" id="myCode">–</p>
+    <p>📸 <b>Mach einen Screenshot</b> davon – nach jeder Woche neu!</p>
+    <hr style="border:none;border-top:2px dashed #d8dbe6;margin:16px 0">
+    <h3>♻️ Stempel zurückholen</h3>
+    <p>Deine Stempel sind weg? Gib deinen letzten Sicherungs-Code ein:</p>
+    <input id="codeIn" maxlength="9" placeholder="KD-XXXX" autocapitalize="characters" autocomplete="off" style="text-transform:uppercase">
+    <button class="btn green" id="codeBtn">Wiederherstellen</button>
+    <p id="codeMsg"></p>
+  </div>
   <div class="card notes" style="margin-top:16px">
     <h3>✍️ Meine Exit-Tickets</h3>
     <div id="notes"></div>
@@ -52,10 +64,15 @@
 <script src="common.js"></script>
 <script>
 const names=['Wo steckt KI?','Trainiere die Maschine','Gummibärchen-KI','Hallo fobizz!','Die KI flunkert','Echt oder KI?','Unfaire Daten','Super oder gefährlich?','Projekt mit KI','KI-Messe'];
+function renderPass(){
 const st=KI.stamps();
 document.getElementById('slots').innerHTML=names.map((n,i)=>`<div class="slot ${st[i+1]?'got':''}">
   <div class="s">${st[i+1]?'🕵️':'⬜'}</div><b>Fall ${i+1}</b><small>${n}</small>${st[i+1]?`<small>✅ ${st[i+1]}</small>`:''}</div>`).join('');
 document.getElementById('count').textContent=Object.keys(st).length;
+document.getElementById('myCode').textContent=KI.stampsToCode();
+}
+renderPass();
+document.getElementById('codeBtn').onclick=()=>{const m=document.getElementById('codeMsg');const w=KI.restoreFromCode(document.getElementById('codeIn').value);if(!w){m.innerHTML='❌ Dieser Code stimmt nicht. Prüfe jeden Buchstaben genau.';return;}m.innerHTML='✅ Geschafft! Stempel für Woche '+(w.join(', ')||'–')+' sind wieder da.';renderPass();};
 const notes=document.getElementById('notes');
 let any=false;
 for(let w=1;w<=10;w++){const t=KI.get('exit_w'+w,'');if(t){any=true;const p=document.createElement('p');p.innerHTML=`<b>Woche ${w}:</b> `;p.appendChild(document.createTextNode(t));notes.appendChild(p);}}
